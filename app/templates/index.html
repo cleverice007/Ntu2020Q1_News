@@ -1,0 +1,33 @@
+{%extends "base.html"%}
+{%import "bootstrap/wtf.html" as wtf%}
+{%block title%}News{%endblock%}
+
+{%block scripts %}
+{{super()}}
+<script>
+	  function getdata(e){
+		 var userId = document.getElementById('user');
+		 var search = document.getElementById('search');
+		 var href = e ;
+
+
+		 var info = {userId: userId.value,
+					 searching: search.value,
+					 URI: href};		
+		$.post("/",info);
+		
+	  } ;
+</script>
+{%endblock %}
+
+{% block page_content %}
+<p><a href="#" onclick="getdata('https://www.google.com');">Google</a></p>
+    <form action= # method='POST'>
+      <label for="username">Username: </label>
+      <input type="text" id="user" name="user" />
+      <label for="search">Search </label>
+      <input type="text" id="search" name="search"  />
+      <button id='searchpage'>搜尋</button>
+      <input type="submit" value='Submit' />
+     </form>
+{% endblock%}

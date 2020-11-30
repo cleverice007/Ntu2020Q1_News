@@ -19,6 +19,14 @@
 
 	  } ;
 </script>
+
+<script>
+	  function getSelectValue(){
+		var selectedValue = document.getElementById('date')
+		console.log(selectedValue)
+	  } ;
+</script>
+
 {%endblock %}
 
 {% block page_content %}
@@ -34,4 +42,11 @@
 		 {%for href in df.link%}
 		 <a href = "#" onclick = "getdata('{{href}}');"> {{href}}</a>
 		 {%endfor%}
+    <select id="date" name="date">
+		     <option value="">新聞年份</option>
+		     <option value="2018">2018</option>
+		     <option value="2019" >2019</option>
+		     <option value="2020">2020</option>
+
+		 </select>
 {% endblock%}

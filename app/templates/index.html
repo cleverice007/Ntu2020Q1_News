@@ -36,6 +36,9 @@
       <button id='searchpage'>搜尋</button>
       <input type="submit" value='Submit' />
      </form>
+     {%for href in df.link%}
+		 <a href = "#" onclick = "getdata('{{href}}');"> {{href}}</a>
+		 {%endfor%}
  <select id="date" name="date">
 		     <option value="">新聞年份</option>
 		     <option value="2018">2018</option>

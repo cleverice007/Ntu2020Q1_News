@@ -1,0 +1,180 @@
+{%extends "base.html"%}
+{%import "bootstrap/wtf.html" as wtf%}
+{%block title%}News{%endblock%}
+{%- block head %}
+
+{%- block metas %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{%- endblock metas %}
+
+{%- block styles %}
+<!-- Bootstrap -->
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+{%- endblock styles %}
+{%- endblock head %}
+
+{%block scripts %}
+{{super()}}
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script>
+$(".date")
+.datepicker({
+	dateFormat: 'yymmdd',
+	changeMonth: true,
+    changeYear: true,
+    onSelect: function(dateText) {
+        get_news();
+    },
+})
+.on("change", function() {
+    console.log("Got change event from field");
+});
+</script>
+
+<script type="text/javascript">
+	var get_data = function(link){
+		var dateString = $(".date").datepicker().val();
+		date = dateString.substring(0, 4) + dateString.substring(4, 7) + dateString.substring(7, 10);
+		var searching = $("#title").val();
+		var userId = $("#user").val();
+		var data = {"userId": userId,
+					"searching": searching,
+					"date": date,
+					"URI": link};
+		window.open(link);
+
+	    $.ajax({
+	        url: "/save_records",
+	        data: data,
+	        type: "POST",
+	        success: function(news){
+	            console.log("Saved");
+	        },
+
+	        error: function(jqXHR, textStatus, errorThrown){
+	            console.log("There is a error!")
+	        }
+	    });
+	    document.getElementById("recommended_news").innerHTML = "Loading news.....";
+	    $.ajax({
+	        url: "/get_recommend_news",
+	        data: "user=" + userId + "&date=" + date + "&title=" + searching,
+	        type: "GET",
+	        dataType:'text',
+
+	        success: function(news_link){
+	            document.getElementById("recommended_news").innerHTML = news_link;
+	        },
+
+	        error: function(jqXHR, textStatus, errorThrown){
+	            document.getElementById("recommended_news").innerHTML = errorThrown;
+	        }
+	    });
+	}
+</script>
+
+<script>
+	var get_news = function(){
+		var userId = $("#user").val();
+		var date = $(".date").datepicker().val();
+		var searching = $("#title").val();
+
+	    $.ajax({
+	        url: "/get_news",
+	        data: "date=" + date + "&title=" + searching,
+	        type: "GET",
+	        dataType:'text',
+
+	        success: function(news_link){
+	            document.getElementById("news").innerHTML = news_link;
+	        },
+
+	        error: function(jqXHR, textStatus, errorThrown){
+	            document.getElementById("news").innerHTML = errorThrown;
+	        }
+	    });
+	    document.getElementById("recommended_news").innerHTML = "Loading news.....";
+	    $.ajax({
+	        url: "/get_recommend_news",
+	        data: "user=" + userId + "&date=" + date + "&title=" + searching,
+	        type: "GET",
+	        dataType:'text',
+
+	        success: function(news_link){
+	            document.getElementById("recommended_news").innerHTML = news_link;
+	        },
+
+	        error: function(jqXHR, textStatus, errorThrown){
+	            document.getElementById("recommended_news").innerHTML = errorThrown;
+	        }
+	    });
+	}
+</script>
+
+<script type="text/javascript">
+	var clear_date = function(){
+		var date = $(".date").datepicker().val('');
+		var searching = $("#title").val('');
+		get_news();
+	};
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+    	$.ajax({
+	        url: "/get_default_news",
+	        type: "GET",
+	        dataType:'text',
+
+	        success: function(news_link){
+	        	$(".date").datepicker().val('20180530');
+	            document.getElementById("news").innerHTML = news_link;
+	        },
+
+	        error: function(jqXHR, textStatus, errorThrown){
+	            document.getElementById("news").innerHTML = errorThrown;
+	        }
+	    });
+
+    	$.ajax({
+	        url: "/get_default_recomm_news",
+	        type: "GET",
+	        dataType:'text',
+
+	        success: function(news_link){
+	        	$(".date").datepicker().val('20180530');
+	            document.getElementById("recommended_news").innerHTML = news_link;
+	        },
+
+	        error: function(jqXHR, textStatus, errorThrown){
+	            document.getElementById("recommended_news").innerHTML = errorThrown;
+	        }
+	    });
+
+});
+</script>
+
+{%endblock %}
+
+{% block page_content %}
+	<p>日期：<input type="text" class="date"></p> <input type="button" onclick="clear_date()" value="Clear" /> 
+    <form action= "#" method='POST'>
+      <label for="user">Username: </label>
+      <input type="text" id="user" name="user" />
+      <label for="title">Title: </label>
+      <input type="text" id="title" name="title" />
+      <input type="button" onclick="get_news()" value='搜尋' />
+    </form>
+
+    <div id="news">
+    </div>
+	</br></br></br>
+    <div>
+    	<h2> Recommendatory News </h2>
+    <div id="recommended_news">
+    </div>
+{% endblock%}

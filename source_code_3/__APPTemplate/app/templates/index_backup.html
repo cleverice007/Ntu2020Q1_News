@@ -1,0 +1,86 @@
+{%extends "base.html"%}
+{%import "bootstrap/wtf.html" as wtf%}
+{%block title%}News{%endblock%}
+{%- block head %}
+
+{%- block metas %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{%- endblock metas %}
+
+{%- block styles %}
+<!-- Bootstrap -->
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+{%- endblock styles %}
+{%- endblock head %}
+
+
+
+
+
+
+{%block scripts %}
+{{super()}}
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script>
+		$(function(){
+				$("#datepicker").datepicker();
+				<!--$("#datepicker").datepicker("setDate", new Date());-->
+		});
+
+		$(function(){
+				$("#tabs").tabs();
+		});
+</script>
+<script>
+	  function getdata(e){
+			window.open(e)
+		 var userId = document.getElementById('user');
+		 var search = document.getElementById('search');
+		 var href = e ;
+
+		 var info = {userId: userId.value,
+					 searching: search.value,
+					 URI: href};
+		$.post("/",info);
+
+	  } ;
+</script>
+
+<script>
+	  function getSelectValue(){
+		var selectedValue = document.getElementById('date')
+		console.log(selectedValue)
+	  } ;
+</script>
+
+
+{%endblock %}
+
+{% block page_content %}
+<p><a href="#" onclick="getdata('https://www.google.com');">Google</a></p>
+    <form action= "#" method='POST'>
+      <label for="username">Username: </label>
+      <input type="text" id="user" name="user" />
+      <label for="search">Search </label>
+      <input type="text" id="search" name="search"  />
+      <button id='searchpage'>搜尋</button>
+      <input type="submit" value='Submit' />
+     </form>
+		 {%for href in df.link%}
+		 <a href = "#" onclick = "getdata('{{href}}');"> {{href}}</a>
+		 {%endfor%}
+		 <form action = "#" method = 'POST'>
+			<p>日期：<input type="text" id="datepicker"></p>
+			<input type="submit" value='Submit' />
+     	</form>
+		 <!--
+		 {%for href in df2.link%}
+		 <a href = "#" onclick = "getdata('{{href}}');"> {{href}}</a>
+		 {%endfor%}
+-->
+
+{% endblock%}

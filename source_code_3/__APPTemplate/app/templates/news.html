@@ -1,0 +1,48 @@
+<table>
+	<tbody>
+	{% for row in r %}
+		<tr class="news_tr">
+			<td valign="top" style="width: 500px">
+				<h3> Source: {{row[0]}} </h3>
+				<table>
+				{% for s1_row in news[row[0]] %}
+				<tr>
+					<li><a onclick="get_data('{{s1_row[1]}}')">{{s1_row[0]}}</a></li>
+				</tr>
+				{% endfor %}
+				</table>
+			</td>
+			<td valign="top" style="width: 500px">
+				{% if row[1] %}
+				<h3> Source: {{row[1]}} </h3>
+				<table>
+				{% for s2_row in news[row[1]] %}
+				<tr>
+					<li><a onclick="get_data('{{s2_row[1]}}')">{{s2_row[0]}}</a></li>
+				</tr>
+				{% endfor %}
+				{% endif %}
+				</table>
+			</td>
+		</tr>
+	{% endfor %}
+</tbody>
+</table>
+
+<style>
+	table {
+ width: 100%;
+ display:block;
+}
+thead {
+ display: inline-block;
+ width: 100%;
+ height: 20px;
+}
+.news_tr{
+ height: 200px;
+ display: inline-block;
+ width: 100%;
+ overflow: auto;
+}
+</style>
